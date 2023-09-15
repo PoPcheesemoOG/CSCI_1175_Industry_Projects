@@ -92,25 +92,34 @@ public class UnweightedGraph<V> implements Graph<V> {
 		Stack<Integer> stack = new Stack<>();
 		
 		// Insert your code here
-		
+		//	for (int i = 0; i <  getNeighbors(x).size() - 1; i++) {
 		stack.push(v);
 		searchOrder.add(v);
 		isVisited[v] = true;
 		
-		while (stack.empty() == false) {
+		while (!stack.isEmpty()) {
 			int x = stack.peek();
 			
-			if (getNeighbors(x).isEmpty()) {
+			if (neighbors.get(x).size() == 0) {
 				stack.pop();
+				continue;
 			}
 			else {
-				// rest of the code
-			}
+				for (int i = neighbors.get(x).size() - 1; i >= 0; i--) {
 			
-			
-		}
-		
-		
+					Edge e = neighbors.get(x).get(i);		
+					neighbors.get(x).remove(i);
+					
+					if (isVisited[e.v] == false ) {
+						parent[e.v] = x;
+						stack.push(e.v);
+						isVisited[e.v] = true;
+						searchOrder.add(e.v);
+						break;
+					}
+				}
+			}			
+		}		
 		return new SearchTree(v, parent, searchOrder);
 	}
 
