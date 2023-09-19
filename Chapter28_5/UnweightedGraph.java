@@ -50,9 +50,25 @@ public class UnweightedGraph<V> implements Graph<V> {
 	// Returns the best path between two nodes
 	public List<Integer> getPath(int u, int v) {
 		List<Integer> path = new ArrayList<>();		// Instantiate path
+		int originalV = v;
+		//path.add(u);
 		
+		SearchTree sTree = bfs(u);
 		
+		if (sTree.getPath(v) == null) return null;
 		
+		while (sTree.getParent(v) != -1) {
+			int q = sTree.getParent(v);
+			path.add(q);
+			v = q;			
+		}
+		
+		Collections.reverse(path);
+		path.add(originalV);
+//		for (int i = v; i > 0; i--) {
+//			path.add(sTree.getParent(i));		
+//		}
+//		
 		return path;
 	}
 	
