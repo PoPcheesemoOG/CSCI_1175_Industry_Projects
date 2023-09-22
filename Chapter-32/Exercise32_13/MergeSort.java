@@ -22,31 +22,31 @@ public class MergeSort {
     }
   }
 
-  public static<E extends Comparable<E>> E[]
-    merge(E[] list1, E[] list2, E[] temp) {
+  public static<E extends Comparable<E>> E[] merge(E[] firstHalf, 
+		  E[] secondHalf, E[] list) {
     
     int current1 = 0; // Index in list1
     int current2 = 0; // Index in list2
     int current3 = 0; // Index in temp
 
-    while (current1 < list1.length && current2 < list2.length) {
-      if (list1[current1].compareTo(list2[current2]) < 0) {
-        temp[current3++] = list1[current1++];
+    while (current1 < firstHalf.length && current2 < secondHalf.length) {
+      if (firstHalf[current1].compareTo(secondHalf[current2]) < 0) {
+        list[current3++] = firstHalf[current1++];
       }
       else {
-        temp[current3++] = list2[current2++];
+        list[current3++] = secondHalf[current2++];
       }
     }
 
-    while (current1 < list1.length) {
-      temp[current3++] = list1[current1++];
+    while (current1 < firstHalf.length) {
+      list[current3++] = firstHalf[current1++];
     }
 
-    while (current2 < list2.length) {
-      temp[current3++] = list2[current2++];
+    while (current2 < secondHalf.length) {
+      list[current3++] = secondHalf[current2++];
     }
 
-    return temp;
+    return list;
   }
 
   public static <E> void mergeSort(E[] list,
