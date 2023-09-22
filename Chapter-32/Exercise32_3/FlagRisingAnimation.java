@@ -1,3 +1,5 @@
+import java.io.File;
+import javafx.scene.image.Image;
 import javafx.animation.PathTransition; 
 import javafx.application.Application; 
 import javafx.scene.Scene;
@@ -14,28 +16,28 @@ public class FlagRisingAnimation extends Application {
 		Pane pane = new Pane();
 
 		// Add an image view and add it to pane
-		ImageView imageView = new ImageView("image/us.gif");
+		//ImageView imageView = new ImageView("/Users/student/eclipse-workspace/f/src/image/us.gif");
+		
+		File file = new File("/Users/student/eclipse-workspace/f/src/image/us.gif");
+		Image image = new Image(file.toURI().toString());
+		ImageView imageView = new ImageView(image);
+		
 		pane.getChildren().add(imageView);
 
 		// Create a path transition
-		new Thread (new Runnable () {
+		Thread thread = new Thread( (new Runnable () {
 			@Override
 			public void run() {
-
 				try {
-					while (true) {
 						PathTransition pt = new PathTransition(Duration.millis(10000),
-								new Line(100, 200, 100, 0), imageView); pt.setCycleCount(5);
-								pt.play(); // Start animation
-					}
+							new Line(100, 200, 100, 0), imageView); pt.setCycleCount(5);
+							pt.play(); // Start animation
 				}
 				catch (Exception ex) {
-
-				}
-				
+				}				
 			}
-		}).start();
-
+		}));
+		thread.start();
 
 		// Create a scene and place it in the stage
 		Scene scene = new Scene(pane, 250, 200); 
