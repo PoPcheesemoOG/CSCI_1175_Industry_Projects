@@ -1,8 +1,9 @@
 import java.util.concurrent.RecursiveAction;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 
-
-public class ParallelMergeSort <E> {
+public class ParallelMergeSort extends MergeSort{
 	public static void main(String[] args) {
 		final int SIZE = 7000000;
 		Integer[] list1 = new Integer[SIZE];
@@ -24,61 +25,49 @@ public class ParallelMergeSort <E> {
 		System.out.println("\nSequential time is " + 
 			(endTime - startTime) + " milliseconds");
 	}
-
-//	public static void parallelMergeSort(int[] list) {
-//		RecursiveAction mainTask = new SortTask(list);
-//		ForkJoinPool pool = new ForkJoinPool();
-//		pool.invoke(mainTask);
-//	}
 	
 	public static <E extends Comparable<E>> void parallelMergeSort (E[] list) {
-		RecursiveAction mainTask = new SortTask <E> (list);
+		RecursiveAction mainTask = new SortTask<E> (list);
 		ForkJoinPool pool = new ForkJoinPool();
 		pool.invoke(mainTask);
 		
 		
 	}
-	
-//	private static class SortTask<E> extends RecursiveAction {
-//
-//		@Override
-//		protected void compute() {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//		
-//	}
 
-	protected static class SortTask <E> extends RecursiveAction {	
-		private final int THRESHOLD = 500;
-		protected E[] list;
+	public static class SortTask<E extends Comparable<E>> extends RecursiveAction {	
+		public final int THRESHOLD = 500;
+		public E[] Elist;
 
 		SortTask (E[] list1) {
-			list = list1;
+			Elist =(E[]) list1;
 		}
 		@Override
-		protected void compute() {
-			if (list.length < THRESHOLD)
-				java.util.Arrays.sort(list);
+		public void compute() {
+			if (Elist.length < THRESHOLD)
+				java.util.Arrays.sort(Elist);
 			else {
 				// Obtain the first half
-				E[] firstHalf  = (E[]) new Object[list.length / 2];
-				System.arraycopy(list, 0, firstHalf, 0, list.length / 2);
+				E[] firstHalf  = newArray(Elist.length/2, Elist);   //  [Elist.length / 2];   // new E[Elist.length / 2]
+				System.arraycopy(Elist, 0, firstHalf, 0, Elist.length / 2);
 
 				// Obtain the second half
-				Integer secondHalfLength = list.length - list.length / 2;
-				E[] secondHalf =(E[])  new Object[secondHalfLength];
-				System.arraycopy(list, list.length / 2, 
+				Integer secondHalfLength = Elist.length - Elist.length / 2;
+				E[] secondHalf =newArray(secondHalfLength, Elist);
+				System.arraycopy((E[]) Elist, Elist.length / 2, 
 					secondHalf, 0, secondHalfLength);
 
 				// Recursively sort the two halves
-				invokeAll(new SortTask<E>(firstHalf), 			// Re-evaluate
-					new SortTask<E>(secondHalf));				// Re-evaluate
+				invokeAll(new SortTask<E>((E[]) firstHalf), 			// Re-evaluate
+					new SortTask<E>((E[]) secondHalf));				// Re-evaluate
 
 				// Merge firstHalf with secondHalf into list
-				MergeSort.merge(firstHalf, secondHalf, list);	// Problem Line
+				MergeSort.merge(firstHalf, secondHalf, Elist);// Problem Line
 								
 			}
 		}
+	}
+	static <E> E[] newArray(int length, E[] array)
+	{
+	    return Arrays.copyOf(array, length);
 	}
 }
