@@ -9,37 +9,35 @@ public class Client {
 		Socket socket = new Socket("localhost", 1338);
 		Scanner in = new Scanner(System.in);
 		String clientInput = "";
-		PrintWriter pw = new PrintWriter(socket.getOutputStream());
+		
+		PrintWriter pw = new PrintWriter(socket.getOutputStream());		
 		InputStreamReader input = new InputStreamReader(socket.getInputStream());
 		BufferedReader br = new BufferedReader(input);
+		
+		double clientInputDouble;
+		double Area;
+//		int Area1;
+		String Area1;
+		DataOutputStream outputToServer = new DataOutputStream(socket.getOutputStream());
+		DataInputStream inputFromServer = new DataInputStream(socket.getInputStream());
 
 		String str = "";
 
 		while (clientInput != "STOP") {
-			System.out.println("Please write message and hit enter to send, "
-					+ "type in stop to stop.");
+			System.out.println("Please give the radius of a circle");
+			clientInputDouble = in.nextDouble();
+
+			outputToServer.writeDouble(clientInputDouble);
+			outputToServer.flush();
 			
-			if (clientInput != null) {
-				clientInput = in.nextLine();
-				pw.println(clientInput);
-				pw.flush();
-				clientInput = null;
-			}
+//			Area = inputFromServer.readDouble();
 
+//			Area1 = input.read();
+			Area1 = inputFromServer.readUTF();
 			
-			str = br.readLine();
-
-			if(str != null) {	
-				System.out.println("Server: " + str);
-				str = null;
-			}
-		}
-
-
-		while (br.readLine() != "STOP") {
-
-			System.out.println("Server: " + str);
-			str = br.readLine();
+//			System.out.println("Area of the circle is: " + Area);
+			System.out.println("Area of the circle is: " + Area1);
+				
 		}
 	}
 }
