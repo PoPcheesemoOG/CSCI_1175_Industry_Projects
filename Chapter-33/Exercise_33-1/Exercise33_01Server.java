@@ -34,19 +34,19 @@ public class Exercise33_01Server extends Application {
 					clientNo++;
 					
 					Platform.runLater( () -> {
-						ta.appendText("Starting thread for client: " + clientNo);
+						ta.appendText("Starting thread for client: " + clientNo + '\n');
 						InetAddress inetAddress = socket.getInetAddress();
-						ta.appendText("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
-						ta.appendText("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress());						
-					});
+						ta.appendText("Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n');
+						ta.appendText("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n');
 					
+					});	
+					new Thread(new HandleAClient(socket)).start();
 				}
 			}
 			catch (IOException e) {
 				System.err.println(e);
 			}
-		}).start();
-	
+		}).start();	
 	}
 
 	/**
@@ -64,14 +64,23 @@ public class Exercise33_01Server extends Application {
 		@Override
 		public void run() {
 			try {
-				DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
-				DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
+				DataInputStream fromClient = new DataInputStream(socket.getInputStream());
+				ObjectOutputStream toClient = new ObjectOutputStream(socket.getOutputStream());
 				
 				while (true) {
 					
-				}
-			
-			
+					double annualInterestRate = fromClient.readDouble();
+					ta.appendText("Annual Interest Rate: " + annualInterestRate + '\n');
+					int numberOfYears = fromClient.readInt();
+					ta.appendText("Number of Years: " + numberOfYears + '\n');
+					double loanAmount = fromClient.readDouble();
+					ta.appendText("Loan Amount: " + loanAmount + '\n');
+					
+					Loan loan = new Loan(annualInterestRate, numberOfYears, loanAmount);
+					
+					toClient.writeObject(loan);
+					
+				}			
 			}
 			catch (Exception ex) {
 				System.err.println(ex);

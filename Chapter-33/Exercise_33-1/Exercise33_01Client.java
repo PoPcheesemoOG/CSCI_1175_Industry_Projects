@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Exercise33_01Client extends Application {
-	// Text field for receiving radius
+	// Text field for receiving data
 	private TextField tfAnnualInterestRate = new TextField();
 	private TextField tfNumOfYears = new TextField();
 	private TextField tfLoanAmount = new TextField();
@@ -26,7 +26,7 @@ public class Exercise33_01Client extends Application {
 	private TextArea ta = new TextArea();
 
 	@Override // Override the start method in the Application class
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws IOException {
 		ta.setWrapText(true);
 
 		GridPane gridPane = new GridPane();
@@ -42,7 +42,7 @@ public class Exercise33_01Client extends Application {
 		tfNumOfYears.setAlignment(Pos.BASELINE_RIGHT);
 		tfLoanAmount.setAlignment(Pos.BASELINE_RIGHT);
 
-		tfLoanAmount.setPrefColumnCount(5);
+		tfAnnualInterestRate.setPrefColumnCount(5);
 		tfNumOfYears.setPrefColumnCount(5);
 		tfLoanAmount.setPrefColumnCount(5);
 
@@ -50,25 +50,35 @@ public class Exercise33_01Client extends Application {
 		pane.setCenter(new ScrollPane(ta));
 		pane.setTop(gridPane);
 
-		try {
-			Socket socket = new Socket("localhost", 1338);
-			Scanner in = new Scanner(System.in);
-			String clientInput = "";
-			
-			
-
-		}
-		catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
 		// Create a scene and place it in the stage
 		Scene scene = new Scene(pane, 400, 250);
 		primaryStage.setTitle("Exercise31_01Client"); // Set the stage title
 		primaryStage.setScene(scene); // Place the scene in the stage
 		primaryStage.show(); // Display the stage
-	}
 
+		Socket socket = new Socket("localhost", 1337);
+		//		Scanner in = new Scanner(System.in);
+		//		String clientInput = "";
+
+		DataOutputStream toServer = new DataOutputStream(socket.getOutputStream());
+		ObjectInputStream fromServer = new ObjectInputStream(socket.getInputStream());
+
+		btSubmit.setOnAction(e -> {
+			try {
+				double annualInterestRate = Double.parseDouble(tfAnnualInterestRate.getText());			
+				int numberOfYears = Integer.parseInt(tfNumOfYears.getText());			
+				double loanAmount = Double.parseDouble(tfLoanAmount.getText());
+				toServer.writeDouble(annualInterestRate);
+				toServer.writeInt(numberOfYears);
+				toServer.writeDouble(loanAmount);
+				Loan loan = (Loan) fromServer.readObject();		
+				ta.appendText(loan.toString());
+			}
+			catch (Exception ex){
+				System.err.println(ex);
+			}
+		});
+	}
 	/**
 	 * The main method is only needed for the IDE with limited
 	 * JavaFX support. Not needed for running from the command line.
