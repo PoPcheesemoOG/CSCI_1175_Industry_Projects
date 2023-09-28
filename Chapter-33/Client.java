@@ -18,8 +18,8 @@ public class Client {
 		double Area;
 //		int Area1;
 		String Area1;
-		DataOutputStream outputToServer = new DataOutputStream(socket.getOutputStream());
-		DataInputStream inputFromServer = new DataInputStream(socket.getInputStream());
+		DataOutputStream toServer = new DataOutputStream(socket.getOutputStream());
+		DataInputStream fromServer = new DataInputStream(socket.getInputStream());
 
 		String str = "";
 
@@ -27,13 +27,13 @@ public class Client {
 			System.out.println("Please give the radius of a circle");
 			clientInputDouble = in.nextDouble();
 
-			outputToServer.writeDouble(clientInputDouble);
-			outputToServer.flush();
+			toServer.writeDouble(clientInputDouble);
+			toServer.flush();
 			
-//			Area = inputFromServer.readDouble();
+//			Area = fromServer.readDouble();
 
 //			Area1 = input.read();
-			Area1 = inputFromServer.readUTF();
+			Area1 = fromServer.readUTF();
 			
 //			System.out.println("Area of the circle is: " + Area);
 			System.out.println("Area of the circle is: " + Area1);
