@@ -59,19 +59,19 @@ public class MultiThreadServer extends Application {
 		public void run() {									// Run a thread
 			try {
 				// Create data input and output streams
-				DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
-				DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
+				DataInputStream fromClient = new DataInputStream(socket.getInputStream());
+				DataOutputStream toClient = new DataOutputStream(socket.getOutputStream());
 				
 				// Continuously serve the client 
 				while (true) {
 					// Receive radius from the client
-					double radius = inputFromClient.readDouble();
+					double radius = fromClient.readDouble();
 					// Compute area
 					double area = radius * radius * Math.PI;
 					// Send area back to the client
-					outputToClient.writeUTF("" + area);
-			//		outputToClient.writeDouble(area);
-					outputToClient.flush();
+					toClient.writeUTF("" + area);
+			//		toClient.writeDouble(area);
+					toClient.flush();
 					Platform.runLater(() -> {
 						ta.appendText("radius received from client: " +  radius + '\n');
 						ta.appendText("Area found: " + area + '\n');
