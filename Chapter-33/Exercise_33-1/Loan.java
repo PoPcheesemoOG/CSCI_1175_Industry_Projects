@@ -56,7 +56,7 @@ public class Loan implements java.io.Serializable {
 		double monthlyInterestRate = annualInterestRate / 1200;
 		double monthlyPayment = loanAmount * monthlyInterestRate / (1 -
 				(Math.pow(1 / (1 + monthlyInterestRate), numberOfYears * 12)));
-		return monthlyPayment;    
+		return Math.floor(monthlyPayment * 100)/100;    
 	}
 
 	/** Find total payment */
@@ -67,7 +67,8 @@ public class Loan implements java.io.Serializable {
 	}
 	public String toString() {
 		return ("Loan:\nAnnual Interest Rate: " + this.annualInterestRate + "\nNumber Of Years: "
-				+ this.numberOfYears + "\nLoan Amount: " + this.loanAmount + "\nTotal Payment: " + getTotalPayment());
+				+ this.numberOfYears + "\nLoan Amount: " + this.loanAmount + "\nMonthly Payment: "
+				+ getMonthlyPayment() + "\nTotal Payment: " + getTotalPayment());
 	}
 
 	/** Return loan date */
