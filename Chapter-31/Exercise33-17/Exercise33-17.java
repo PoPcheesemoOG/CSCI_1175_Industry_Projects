@@ -2,21 +2,20 @@
  * Date: 10/10/23
  */
 
-import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.geometry.*;
 import javafx.stage.*;
 import javafx.application.*;
 import javafx.scene.*;
 
-public class f extends Application {
+public class Exercise31_17 extends Application {
 	private TextField tfInvestment = new TextField();
 	private TextField tfYears = new TextField();
 	private TextField tfInterest = new TextField();
 	private TextField tfFutureValue = new TextField();
 	double futureValue, investmentAmount, monthlyInterestRate, years;
-
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -29,47 +28,54 @@ public class f extends Application {
 
 		menuOperation.getItems().addAll(menuItemCalculate, menuItemExit);
 
-		VBox vbox1 = new VBox(2);
-		HBox hbox1 = new HBox(2);
-		tfInvestment.setPrefColumnCount(2);
-		tfYears.setPrefColumnCount(2);
-		tfInterest.setPrefColumnCount(2);
-		tfFutureValue.setPrefColumnCount(2);
+		tfInvestment.setPrefColumnCount(14);
+		tfYears.setPrefColumnCount(14);
+		tfInterest.setPrefColumnCount(14);
+		tfFutureValue.setPrefColumnCount(14);
 		
+		tfInvestment.setAlignment(Pos.CENTER_RIGHT);
+		tfYears.setAlignment(Pos.CENTER_RIGHT);
+		tfInterest.setAlignment(Pos.CENTER_RIGHT);
+		tfFutureValue.setAlignment(Pos.CENTER_RIGHT);
 		
-		vbox1.getChildren().addAll(new Label("Invesment Amount: "), tfInvestment, new Label("Number of Years: "), 
-				tfYears, new Label("Annual Interest Rate: "), tfInterest, 
-				new Label("Future Value"), tfFutureValue);
-		vbox1.setAlignment(Pos.CENTER);
+		Button btCalc = new Button("Calculate");
+		btCalc.setAlignment(Pos.BOTTOM_RIGHT);
 		
+		GridPane gridPane = new GridPane();
+		gridPane.addColumn(0, new Label("Invesment Amount: "), new Label("Number of Years: "), 
+				new Label("Annual Interest Rate: "), new Label("Future Value: "));
+		gridPane.addColumn(1, tfInvestment, tfYears, tfInterest, tfFutureValue, btCalc);
 		
-		hbox1.getChildren().addAll(new Label("Invesment Amount: "), tfInvestment, new Label("Number of Years: "), 
-				tfYears, new Label("Annual Interest Rate: "), tfInterest, 
-				new Label("Future Value"), tfFutureValue);
-		hbox1.setAlignment(Pos.CENTER);
-
-		VBox vBox = new VBox(8);
-		vBox.getChildren().addAll(menuBar, hbox1);
+		VBox vBox = new VBox(10);
+		vBox.getChildren().addAll(menuBar, gridPane);
+		
 		Scene scene = new Scene(vBox, 400, 300);
-		primaryStage.setTitle("MenuDemo"); // Set the window title 
+		primaryStage.setTitle("Investment Calculator"); // Set the window title 
 		primaryStage.setScene(scene); // Place the scene in the window 
 		primaryStage.show(); // Display the window
 
 		//Handle menu actions
+		scene.setOnKeyPressed(e -> {
+			if (e.getCode() == KeyCode.ENTER) {
+				Calculate(investmentAmount, monthlyInterestRate, years);
+			}
+		});
 		menuItemCalculate.setOnAction(e -> Calculate(investmentAmount, monthlyInterestRate, years));
-
+		btCalc.setOnAction(e -> Calculate(investmentAmount, monthlyInterestRate, years));
+		menuItemExit.setOnAction(e -> System.exit(0));
 	}
 	
 	public static void main(String[] args) {
 		launch (args);
-	}
-	
+	}	
 	public void Calculate(double investmentAmount, double monthlyInterestRate, double years) {
 		investmentAmount = Double.parseDouble(tfInvestment.getText());
-		monthlyInterestRate = Double.parseDouble(tfInterest.getText());
+		monthlyInterestRate = Double.parseDouble(tfInterest.getText()) / 1200;
 		years = Double.parseDouble(tfYears.getText());
-		futureValue = (investmentAmount * Math.pow((1 + monthlyInterestRate), (years * 12)));
-		tfFutureValue.setText("" + futureValue);
+
+		futureValue = (investmentAmount * (Math.pow((1 + monthlyInterestRate), (years * 12))));
+		new String();
+		tfFutureValue.setText(String.format("$%.2f", futureValue));
 		return;
 	}
 }
